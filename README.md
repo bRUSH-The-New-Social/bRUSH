@@ -408,10 +408,36 @@ Research how to publish the app on the app store and fix any issues as (and if) 
 - Trained the LLM on certain prompts by giving it examples.
 🔗 [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-119-training-the-llm-on-certain-prom)
 
-#### **Next Steps**
-- Fixing notifications and streak.
-- Implement a refresh function on the feed.
-- Add necessary animations and UI changes.
+## Sprint 3:
+
+#### **KAN-201 – Planning Backend unit tests**
+- Planned and documented required backend unit tests for prompt, drawing, notification, and streak logic.  
+- [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-201-planning-backend-unit-tests)  
+
+#### **KAN-194 – Leaderboard bug when no users**
+- Fixed leaderboard logic to prevent errors when user count is zero.  
+- [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-194-leaderboard-bug-when-no-users)  
+
+#### **KAN-180 – Unit test: Prompt, feed and notification**
+- Added test coverage for prompt generation, feed creation, and user notification triggers.  
+- [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-180-unit-test-prompt-feed-and-notifi)  
+
+#### **KAN-167 – Implement seasonal prompt logic**
+- Implemented backend logic to rotate drawing prompts automatically based on season/date.  
+- [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-167-implement-seasonal-prompt-logic)  
+
+#### **KAN-166 – Modify Firebase to delete old drawings not from the current day**
+- Added cleanup logic to remove outdated drawings from Firebase storage and database.  
+- [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-166-modify-firebase-to-delete-old-dr)  
+
+#### **KAN-165 – Fix reminder bugs & add friend alerts**
+- Fixed issues in reminder scheduling and added logic to send alerts when friends take actions.  
+- [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-165-fix-reminder-bugs-add-friend-ale)  
+
+#### **KAN-164 – Add streak and total drawings tracking logic**
+- Implemented backend tracking of user streak progress and total number of drawings created.  
+- [Bitbucket](https://bitbucket.org/cs3398-nemoidians-f25/%7B57222da5-99b9-44b5-8ae7-38296988f7a4%7D/branch/KAN-164-add-streak-and-total-drawings-tr)
+
 ---
 
 ### 👤 Priyanka Karki
