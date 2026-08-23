@@ -3,6 +3,8 @@ import SwiftUI
 struct EditAvatarView: View {
     @Binding var userProfile: UserProfile?
     @StateObject private var viewModel: EditProfileViewModel
+    @EnvironmentObject private var rcService: RevenueCatService
+    @State private var showingPaywall = false
     @State private var selectedAvatarType: AvatarType
     @State private var selectedBackground: String
     @State private var selectedBody: String?
@@ -183,12 +185,17 @@ struct EditAvatarView: View {
                         ForEach(currentOptions, id: \.self) { option in
                             improvedOptionPreview(
                                 option: option,
+                                isLocked: isBackgroundLocked(option),
                                 optionSize: optionSize,
                                 screenWidth: screenWidth,
                                 screenHeight: screenHeight
                             )
                             .onTapGesture {
-                                updateSelection(option)
+                                if isBackgroundLocked(option) {
+                                    showingPaywall = true
+                                } else {
+                                    updateSelection(option)
+                                }
                             }
                         }
                     }
@@ -196,6 +203,9 @@ struct EditAvatarView: View {
                     .padding(.horizontal, horizontalPadding)
                     .padding(.bottom, 30)
                 }
+            }
+            .sheet(isPresented: $showingPaywall) {
+                ProPaywallView()
             }
             .onAppear {
                 initializeHistory()
@@ -240,7 +250,7 @@ struct EditAvatarView: View {
     }
 
     @ViewBuilder
-    private func improvedOptionPreview(option: String, optionSize: CGFloat, screenWidth: CGFloat, screenHeight: CGFloat) -> some View {
+    private func improvedOptionPreview(option: String, isLocked: Bool, optionSize: CGFloat, screenWidth: CGFloat, screenHeight: CGFloat) -> some View {
         let cornerRadius = screenWidth * 0.03
         let categoryName = (selectedCategory >= 0 && selectedCategory < categories.count) ? categories[selectedCategory] : "Background"
         
@@ -324,6 +334,13 @@ struct EditAvatarView: View {
                         .frame(width: optionSize, height: optionSize)
                 }
             }
+
+            if isLocked {
+                Color.black.opacity(0.42)
+                Image(systemName: "lock.fill")
+                    .font(.system(size: optionSize * 0.28, weight: .semibold))
+                    .foregroundColor(.white)
+            }
         }
         .frame(width: optionSize, height: optionSize)
         .background(
@@ -338,6 +355,12 @@ struct EditAvatarView: View {
     }
 
     // MARK: - Helper Functions (Unchanged)
+
+    private func isBackgroundLocked(_ option: String) -> Bool {
+        guard !rcService.isPro else { return false }
+        guard selectedCategory < categories.count else { return false }
+        return categories[selectedCategory].lowercased().contains("background") && option != "background_1"
+    }
 
     private var currentOptions: [String] {
         let options: [String]

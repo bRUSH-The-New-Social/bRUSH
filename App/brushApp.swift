@@ -61,7 +61,8 @@ struct brushApp: App {
                     Label("Profile", systemImage: "person.crop.circle")
                 }
             }
-            .environmentObject(dataModel) // Inject the DataModel
+            .environmentObject(dataModel)
+            .environmentObject(RevenueCatService.shared)
         }
     }
 }

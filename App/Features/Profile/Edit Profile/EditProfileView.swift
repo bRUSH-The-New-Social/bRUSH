@@ -1,14 +1,18 @@
 import SwiftUI
+import RevenueCatUI
 
 struct EditProfileView: View {
     @Binding var userProfile: UserProfile?
     @ObservedObject var profileViewModel: ProfileViewModel
     @StateObject private var viewModel: EditProfileViewModel
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var rcService: RevenueCatService
     @State private var selectedTab = 0
     @State private var showingDeleteConfirmation = false
-    
+
     @State private var showingAvatarEditor = false
+    @State private var showingPaywall = false
+    @State private var showingCustomerCenter = false
     
     @State private var currentAvatarParts: AvatarParts?
     @State private var originalAvatarParts: AvatarParts?
@@ -175,7 +179,79 @@ struct EditProfileView: View {
                         }
                         .padding(.horizontal)
                         .padding(.top, 24)
-                        
+
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Subscription")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal)
+
+                            VStack(spacing: 0) {
+                                Button {
+                                    if rcService.isPro {
+                                        showingCustomerCenter = true
+                                    } else {
+                                        showingPaywall = true
+                                    }
+                                } label: {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text("bRUSH Pro")
+                                                .font(.system(size: 16, weight: .regular))
+                                            if rcService.isPro {
+                                                Text("Active")
+                                                    .font(.system(size: 12))
+                                                    .foregroundColor(.green)
+                                            }
+                                        }
+                                        Spacer()
+                                        if rcService.isPro {
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .foregroundColor(.green)
+                                                .font(.system(size: 18))
+                                        } else {
+                                            HStack(spacing: 4) {
+                                                Text("Upgrade")
+                                                    .font(.system(size: 14, weight: .medium))
+                                                    .foregroundColor(.accentColor)
+                                                Image(systemName: "chevron.right")
+                                                    .font(.system(size: 14, weight: .medium))
+                                                    .foregroundColor(.secondary)
+                                            }
+                                        }
+                                    }
+                                    .foregroundColor(.primary)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 16)
+                                }
+
+                                if rcService.isPro {
+                                    Divider()
+                                        .padding(.horizontal, 16)
+
+                                    Button {
+                                        showingCustomerCenter = true
+                                    } label: {
+                                        HStack {
+                                            Text("Manage Subscription")
+                                                .font(.system(size: 16, weight: .regular))
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
+                                                .font(.system(size: 14, weight: .medium))
+                                                .foregroundColor(.secondary)
+                                        }
+                                        .foregroundColor(.primary)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 16)
+                                    }
+                                }
+                            }
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 16)
+
                         Spacer()
                     }
                     .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -227,6 +303,12 @@ struct EditProfileView: View {
                 EditAvatarView(userProfile: $userProfile, onAvatarChange: { avatarParts in
                     currentAvatarParts = avatarParts
                 }, isPresentedModally: true)
+            }
+            .sheet(isPresented: $showingPaywall) {
+                ProPaywallView()
+            }
+            .sheet(isPresented: $showingCustomerCenter) {
+                CustomerCenterView()
             }
             .navigationTitle("Edit Profile")
             .toolbar {
