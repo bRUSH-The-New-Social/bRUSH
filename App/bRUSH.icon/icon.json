@@ -1,38 +1,443 @@
 {
+  "features" : [
+    "refractivity"
+  ],
   "fill" : {
     "linear-gradient" : [
-      "extended-srgb:1.00000,0.80000,0.00000,1.00000",
+      "srgb:1.00000,0.80000,0.00000,1.00000",
       "extended-srgb:1.00000,0.21961,0.23529,1.00000"
     ]
   },
   "groups" : [
     {
-      "blend-mode" : "normal",
+      "blend-mode-specializations" : [
+        {
+          "value" : "normal"
+        },
+        {
+          "appearance" : "dark",
+          "value" : "normal"
+        },
+        {
+          "appearance" : "tinted",
+          "value" : "plus-darker"
+        }
+      ],
       "blur-material" : null,
+      "hidden" : false,
       "layers" : [
         {
-          "fill" : "none",
-          "glass" : true,
-          "image-name" : "cf881996-8b6f-4bcd-a366-05e146a975db_removalai_preview.png",
-          "name" : "cf881996-8b6f-4bcd-a366-05e146a975db_removalai_preview",
+          "blend-mode" : "normal",
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:0.57046,0.57047,0.57046,1.00000"
+              }
+            }
+          ],
+          "glass-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : true
+            }
+          ],
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-4.png",
+          "name" : "Paint",
           "position" : {
-            "scale" : 1.4,
+            "scale" : 0.46,
             "translation-in-points" : [
-              1.4614352637207007,
-              -34.95753150819916
+              -60.15400130582822,
+              25.657930952688957
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:0.75407,0.75409,0.75408,1.00000"
+              }
+            }
+          ],
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-6.png",
+          "name" : "Bristle",
+          "position" : {
+            "scale" : 0.135,
+            "translation-in-points" : [
+              -2.5378985211181657,
+              16.659773057952066
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:0.92143,0.92145,0.92144,1.00000"
+              }
+            }
+          ],
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-5.png",
+          "name" : "Ring",
+          "position" : {
+            "scale" : 0.085,
+            "translation-in-points" : [
+              -62.971196315226905,
+              96.13870844416783
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+              }
+            }
+          ],
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-3.png",
+          "name" : "Handle",
+          "position" : {
+            "scale" : 0.24,
+            "translation-in-points" : [
+              -178.1154918103867,
+              203.6783256895315
             ]
           }
         }
       ],
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 1
+      "position" : {
+        "scale" : 0.95,
+        "translation-in-points" : [
+          -10,
+          10
+        ]
       },
-      "specular" : false,
+      "refractivity-specializations" : [
+        {
+          "value" : {
+            "depth" : 0.5,
+            "enabled" : false,
+            "strength" : 0
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "depth" : 0.5,
+            "enabled" : false,
+            "strength" : 0
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "depth" : 0.5,
+            "enabled" : false,
+            "strength" : 0
+          }
+        }
+      ],
+      "shadow-specializations" : [
+        {
+          "value" : {
+            "kind" : "neutral",
+            "opacity" : 0.6
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "kind" : "neutral",
+            "opacity" : 0.6
+          }
+        }
+      ],
+      "specular-specializations" : [
+        {
+          "value" : true
+        },
+        {
+          "appearance" : "dark",
+          "value" : true
+        }
+      ],
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : false,
+            "value" : 0.2
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.2
+          }
+        }
+      ]
+    },
+    {
+      "blend-mode-specializations" : [
+        {
+          "value" : "normal"
+        },
+        {
+          "appearance" : "dark",
+          "value" : "darken"
+        },
+        {
+          "appearance" : "tinted",
+          "value" : "plus-darker"
+        }
+      ],
+      "blur-material" : 1,
+      "hidden" : false,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 2.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 2",
+          "position" : {
+            "scale" : 0.46,
+            "translation-in-points" : [
+              -252.9597172198673,
+              -21.531095586628055
+            ]
+          }
+        },
+        {
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 8.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 8",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              -188.57471721986735,
+              -189.21193748764432
+            ]
+          }
+        },
+        {
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 5.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 5",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              -12.855003595062271,
+              -252.66193748764437
+            ]
+          }
+        },
+        {
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              169.61769875946334,
+              -213.98498440853422
+            ]
+          }
+        },
+        {
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 9.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 9",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              261.42825316439576,
+              -64.15500000000009
+            ]
+          }
+        },
+        {
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 6.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 6",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              238.5432445405412,
+              110.58803440505437
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 3.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 3",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              -189.04471721986727,
+              -189.6819374876443
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 4 2.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 4 2",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              -14.26500359506224,
+              -251.25193748764434
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 7.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7 copy 7",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              -250.61471721986732,
+              -21.99609558662803
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-7.png",
+          "name" : "Untitled - August 30, 2026 at 03.53.35-7",
+          "position" : {
+            "scale" : 0.47,
+            "translation-in-points" : [
+              -249.5147172198673,
+              -20.881095586628135
+            ]
+          }
+        }
+      ],
+      "lighting-specializations" : [
+        {
+          "value" : "individual"
+        },
+        {
+          "appearance" : "dark",
+          "value" : "individual"
+        }
+      ],
+      "opacity" : 1,
+      "refractivity" : {
+        "depth" : 0,
+        "enabled" : true,
+        "strength" : 0.4925
+      },
+      "shadow-specializations" : [
+        {
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.6
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.6
+          }
+        }
+      ],
+      "specular-specializations" : [
+        {
+          "value" : true
+        },
+        {
+          "appearance" : "dark",
+          "value" : true
+        }
+      ],
       "translucency" : {
         "enabled" : true,
-        "value" : 0.5
+        "value" : 0.2
       }
+    },
+    {
+      "blend-mode-specializations" : [
+        {
+          "value" : "screen"
+        },
+        {
+          "appearance" : "dark",
+          "value" : "plus-lighter"
+        },
+        {
+          "appearance" : "tinted",
+          "value" : "screen"
+        }
+      ],
+      "hidden" : false,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "Untitled - August 30, 2026 at 03.53.35-2.png",
+          "name" : "Palette",
+          "position" : {
+            "scale" : 0.435,
+            "translation-in-points" : [
+              -13.5838012405369,
+              -40.91242868245752
+            ]
+          }
+        }
+      ],
+      "refractivity-specializations" : [
+        {
+          "value" : {
+            "depth" : 0.5,
+            "enabled" : true,
+            "strength" : 0
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "depth" : 0.5,
+            "enabled" : true,
+            "strength" : 0
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.6
+      },
+      "specular" : true,
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.2
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "enabled" : true,
+            "value" : 0.2
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
+        }
+      ]
     }
   ],
   "supported-platforms" : {
