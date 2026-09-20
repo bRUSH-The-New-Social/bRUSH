@@ -10,7 +10,7 @@ final class RevenueCatService: ObservableObject {
     @Published var currentOffering: Offering?
 
     private init() {
-        Purchases.configure(withAPIKey: "test_oLjmfFXiqPRkuiWndRKWAngiVbT")
+        Purchases.configure(withAPIKey: AppConfig.revenueCatAPIKey)
         Purchases.logLevel = .warn
         Task { await refreshStatus() }
     }

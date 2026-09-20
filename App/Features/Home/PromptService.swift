@@ -5,7 +5,7 @@ final class PromptService {
     private init() {}
 
     func fetchPrompt() async throws -> String {
-        guard let url = URL(string: "https://generatedailyprompt-loni6woi4a-uc.a.run.app") else {
+        guard let url = URL(string: AppConfig.dailyPromptAPIURL) else {
             throw URLError(.badURL)
         }
 

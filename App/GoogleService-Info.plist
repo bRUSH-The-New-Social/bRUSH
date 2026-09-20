@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1059006983857-g647l86rsh7c5rdilk0ml9kfrgiigcef.apps.googleusercontent.com</string>
+	<string>1059006983857-s932fab2v421rpglj92qdl3penhj3ppv.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1059006983857-g647l86rsh7c5rdilk0ml9kfrgiigcef</string>
+	<string>com.googleusercontent.apps.1059006983857-s932fab2v421rpglj92qdl3penhj3ppv</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDgUAHs3WnI2bb2Co0keJJHmPUD8t69GLs</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.swebrushapp.bRUSH</string>
+	<string>com.kelvinmathew.brush</string>
 	<key>PROJECT_ID</key>
 	<string>brush-ebc32</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1059006983857:ios:530b721dddc4fb860dbc90</string>
+	<string>1:1059006983857:ios:b44aeed98f9c70f60dbc90</string>
 	<key>DATABASE_URL</key>
 	<string>https://brush-ebc32-default-rtdb.firebaseio.com</string>
 </dict>

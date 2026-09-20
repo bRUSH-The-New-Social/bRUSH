@@ -4,5 +4,18 @@
 <dict>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1059006983857-s932fab2v421rpglj92qdl3penhj3ppv</string>
+			</array>
+		</dict>
+	</array>
+	<key>DailyPromptAPIURL</key>
+	<string>https://generatedailyprompt-loni6woi4a-uc.a.run.app</string>
+	<key>RevenueCatAPIKey</key>
+	<string>test_oLjmfFXiqPRkuiWndRKWAngiVbT</string>
 </dict>
 </plist>

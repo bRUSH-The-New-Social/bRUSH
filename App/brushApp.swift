@@ -3,21 +3,27 @@ import PencilKit
 import UserNotifications
 import FirebaseCore
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
+}
+
 @main
 struct brushApp: App {
-    
+    // Register app delegate for Firebase setup
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
     @StateObject var dataModel = DataModel()
-    
+
     init() {
-        if FirebaseApp.app() == nil {
-            FirebaseApp.configure()
-        }
-        
         NotificationManager.shared.requestPermission()
         NotificationManager.shared.scheduleNextReminder()
         UNUserNotificationCenter.current().delegate = NotificationManager.shared
     }
-    
+
     var body: some Scene {
         WindowGroup {
             TabView {
@@ -55,7 +61,7 @@ struct brushApp: App {
                 
                 // 4. Profile Tab
                 NavigationStack {
-                    ProfileView() // Assuming ProfileView exists
+                    ProfileView()
                 }
                 .tabItem {
                     Label("Profile", systemImage: "person.crop.circle")

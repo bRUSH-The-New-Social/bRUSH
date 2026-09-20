@@ -19,11 +19,7 @@ final class FirebaseAuthProvider: AuthProviding, GoogleSignInProviding {
         return nil
     }
 
-    init() {
-        if FirebaseApp.app() == nil {
-            FirebaseApp.configure()
-        }
-    }
+    init() {}
 
     // MARK: - AuthProviding Methods
     
