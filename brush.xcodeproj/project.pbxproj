@@ -21,6 +21,9 @@
 		1033BD892E866B0300111590 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1033BD882E866B0300111590 /* FirebaseStorageCombine-Community */; };
 		1033BD8E2E866B9100111590 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 1033BD8D2E866B9100111590 /* GoogleSignIn */; };
 		1033BD902E866B9100111590 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1033BD8F2E866B9100111590 /* GoogleSignInSwift */; };
+		105BEDC0303B8719004E1445 /* ReceiptParser in Frameworks */ = {isa = PBXBuildFile; productRef = 105BEDBF303B8719004E1445 /* ReceiptParser */; };
+		105BEDC2303B8719004E1445 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 105BEDC1303B8719004E1445 /* RevenueCat */; };
+		105BEDC4303B8719004E1445 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 105BEDC3303B8719004E1445 /* RevenueCatUI */; };
 		5D5D466F2EC036C400F58CF8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5D5D466E2EC036C400F58CF8 /* Lottie */; };
 		5DF4A0AA2EA5D38A00BB4265 /* Vortex in Frameworks */ = {isa = PBXBuildFile; productRef = 5DF4A0A92EA5D38A00BB4265 /* Vortex */; };
 /* End PBXBuildFile section */
@@ -97,6 +100,7 @@
 			files = (
 				1033BD742E8669BB00111590 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
 				1033BD7D2E866B0300111590 /* FirebaseAuth in Frameworks */,
+				105BEDC4303B8719004E1445 /* RevenueCatUI in Frameworks */,
 				1033BD702E8669BB00111590 /* FirebaseAnalytics in Frameworks */,
 				1033BD8E2E866B9100111590 /* GoogleSignIn in Frameworks */,
 				1033BD722E8669BB00111590 /* FirebaseAnalyticsCore in Frameworks */,
@@ -108,6 +112,8 @@
 				1033BD852E866B0300111590 /* FirebaseFunctions in Frameworks */,
 				1033BD902E866B9100111590 /* GoogleSignInSwift in Frameworks */,
 				1033BD872E866B0300111590 /* FirebaseStorage in Frameworks */,
+				105BEDC0303B8719004E1445 /* ReceiptParser in Frameworks */,
+				105BEDC2303B8719004E1445 /* RevenueCat in Frameworks */,
 				1033BD812E866B0300111590 /* FirebaseDatabase in Frameworks */,
 				1033BD892E866B0300111590 /* FirebaseStorageCombine-Community in Frameworks */,
 				1033BD6E2E8669BB00111590 /* FirebaseAI in Frameworks */,
@@ -132,7 +138,15 @@
 				5DF035842EA1B6DE009A748A /* brush.app */,
 				10498CE02EC6BB1800011C98 /* UnitTests.xctest */,
 				10498CE12EC6BB1800011C98 /* UnitTests */,
+				105BEDBA303B83BF004E1445 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		105BEDBA303B83BF004E1445 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,6 +186,9 @@
 				1033BD8F2E866B9100111590 /* GoogleSignInSwift */,
 				5DF4A0A92EA5D38A00BB4265 /* Vortex */,
 				5D5D466E2EC036C400F58CF8 /* Lottie */,
+				105BEDBF303B8719004E1445 /* ReceiptParser */,
+				105BEDC1303B8719004E1445 /* RevenueCat */,
+				105BEDC3303B8719004E1445 /* RevenueCatUI */,
 			);
 			productName = brush;
 			productReference = 5DF035842EA1B6DE009A748A /* brush.app */;
@@ -233,6 +250,7 @@
 				1033BD8C2E866B9100111590 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				5DF4A0A82EA5D38A00BB4265 /* XCRemoteSwiftPackageReference "Vortex" */,
 				5D5D466D2EC036C400F58CF8 /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				105BEDBE303B8719004E1445 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1033B8CF2E863B8800111590;
@@ -414,7 +432,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 879HFN9R93;
+				DEVELOPMENT_TEAM = 95GCPK9L3Y;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
@@ -478,7 +496,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 879HFN9R93;
+				DEVELOPMENT_TEAM = 95GCPK9L3Y;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
@@ -633,6 +651,14 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		105BEDBE303B8719004E1445 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.85.0;
+			};
+		};
 		5D5D466D2EC036C400F58CF8 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
@@ -721,6 +747,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1033BD8C2E866B9100111590 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		105BEDBF303B8719004E1445 /* ReceiptParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 105BEDBE303B8719004E1445 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = ReceiptParser;
+		};
+		105BEDC1303B8719004E1445 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 105BEDBE303B8719004E1445 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		105BEDC3303B8719004E1445 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 105BEDBE303B8719004E1445 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
 		};
 		5D5D466E2EC036C400F58CF8 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;

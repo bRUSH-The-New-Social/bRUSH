@@ -26,8 +26,10 @@ class ProfileViewModel: ObservableObject {
                 self?.isCheckingAuth = false
                 Task {
                     if let uid = newUser?.id {
+                        await RevenueCatService.shared.logIn(userId: uid)
                         await self?.loadProfile(uid: uid)
                     } else {
+                        await RevenueCatService.shared.logOut()
                         await MainActor.run {
                             self?.profile = nil
                         }
