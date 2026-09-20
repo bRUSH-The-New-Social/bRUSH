@@ -386,6 +386,32 @@ struct UserFeedItemView: View {
                 .opacity(showOverlays ? 1 : 0)
                 .animation(.spring(response: 0.25, dampingFraction: 0.55).delay(0.90), value: showOverlays)
                 .allowsHitTesting(showOverlays)
+            
+            if !isOwnPost {
+                Menu {
+                    Button(role: .destructive) {
+                        Task { try? await ModerationService.shared.report(reportedUserID: item.userId, reason: "Inappropriate Content") }
+                    } label: {
+                        Label("Report Post", systemImage: "exclamationmark.bubble")
+                    }
+                    Button(role: .destructive) {
+                        Task { try? await ModerationService.shared.blockUser(blockedUserID: item.userId) }
+                    } label: {
+                        Label("Block User", systemImage: "nosign")
+                    }
+                } label: {
+                    VStack(spacing: 4) {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.system(size: 24, weight: .medium))
+                            .foregroundColor(.white)
+                    }
+                    .padding(10)
+                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 12))
+                }
+                .opacity(showOverlays ? 1 : 0)
+                .animation(.spring(response: 0.25, dampingFraction: 0.55).delay(1.05), value: showOverlays)
+                .allowsHitTesting(showOverlays)
+            }
         }
         .contentShape(Rectangle())
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)

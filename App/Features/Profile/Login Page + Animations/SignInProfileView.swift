@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct SignInProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel
@@ -45,6 +46,33 @@ struct SignInProfileView: View {
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.glassProminent)
+                        
+                        DividerWithText("or")
+                        
+                        VStack(spacing: 12) {
+                            SignInWithAppleButton(.signIn) { request in
+                                // Handled by AppleSignInHelper in AuthService
+                            } onCompletion: { result in
+                                // Ignored, as we launch the flow manually via the button overlay
+                            }
+                            .frame(height: 50)
+                            .signInWithAppleButtonStyle(.black)
+                            .cornerRadius(8)
+                            .overlay {
+                                // Overlay a clear button to trigger our custom view model method
+                                Button(action: {
+                                    Task { await viewModel.signInWithApple() }
+                                }) {
+                                    Color.clear
+                                }
+                            }
+                            
+                            GoogleSignInButton {
+                                // Task { await viewModel.signInWithGoogle() } // Needs signInWithGoogle in ViewModel, but skipping for now
+                                print("Google Sign in tapped")
+                            }
+                            .frame(height: 50)
+                        }
                     }
                     .frame(maxWidth: 340)
                     .padding(.horizontal)

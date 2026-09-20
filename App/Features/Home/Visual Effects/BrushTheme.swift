@@ -35,8 +35,10 @@ public enum BrushTheme {
                 .padding(.horizontal, 24)
                 .padding(.vertical, 14)
                 .background(
-                    BrushTheme.backgroundGradient
-                        .opacity(configuration.isPressed ? 0.85 : 1)
+                    ZStack {
+                        BrushTheme.backgroundGradient
+                    }
+                    .opacity(configuration.isPressed ? 0.85 : 1.0)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)

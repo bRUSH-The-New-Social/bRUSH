@@ -10,7 +10,7 @@ import GoogleSignIn
 // Assuming they are available from AuthService.swift or similar.
 
 #if canImport(FirebaseAuth) && canImport(FirebaseCore)
-final class FirebaseAuthProvider: AuthProviding, GoogleSignInProviding {
+final class FirebaseAuthProvider: AuthProviding, GoogleSignInProviding, AppleSignInProviding {
     var currentUser: AppUser? {
         if let u = Auth.auth().currentUser {
             // Note: u.email can be nil if signed in via phone/anonymous, using "" as fallback.
@@ -68,12 +68,39 @@ final class FirebaseAuthProvider: AuthProviding, GoogleSignInProviding {
         #endif
     }
 
+    // MARK: - AppleSignInProviding Method
+    
+    @MainActor
+    func signInWithApple() async throws -> AppUser {
+        try await withCheckedThrowingContinuation { continuation in
+            let helper = AppleSignInHelper()
+            helper.startSignInWithAppleFlow { result in
+                switch result {
+                case .success(let credential):
+                    Auth.auth().signIn(with: credential) { authResult, error in
+                        if let error = error {
+                            continuation.resume(throwing: error)
+                        } else if let u = authResult?.user {
+                            let appUser = AppUser(id: u.uid, email: u.email ?? "", displayName: u.displayName)
+                            continuation.resume(returning: appUser)
+                        } else {
+                            continuation.resume(throwing: AuthError.backend("Unknown error signing in with Apple"))
+                        }
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     // MARK: - Helpers
     private func signInEmail(email: String, password: String) async throws -> AuthDataResult {
         try await withCheckedThrowingContinuation { cont in
             Auth.auth().signIn(withEmail: email, password: password) { result, error in
                 if let error = error { cont.resume(throwing: error); return }
-                cont.resume(returning: result!)
+                guard let result = result else { cont.resume(throwing: AppAuthError.unknown("No result returned")); return }
+                cont.resume(returning: result)
             }
         }
     }
@@ -82,7 +109,8 @@ final class FirebaseAuthProvider: AuthProviding, GoogleSignInProviding {
         try await withCheckedThrowingContinuation { cont in
             Auth.auth().createUser(withEmail: email, password: password) { result, error in
                 if let error = error { cont.resume(throwing: error); return }
-                cont.resume(returning: result!)
+                guard let result = result else { cont.resume(throwing: AppAuthError.unknown("No result returned")); return }
+                cont.resume(returning: result)
             }
         }
     }
@@ -91,7 +119,8 @@ final class FirebaseAuthProvider: AuthProviding, GoogleSignInProviding {
         try await withCheckedThrowingContinuation { cont in
             Auth.auth().signIn(with: credential) { result, error in
                 if let error = error { cont.resume(throwing: error); return }
-                cont.resume(returning: result!)
+                guard let result = result else { cont.resume(throwing: AppAuthError.unknown("No result returned")); return }
+                cont.resume(returning: result)
             }
         }
     }

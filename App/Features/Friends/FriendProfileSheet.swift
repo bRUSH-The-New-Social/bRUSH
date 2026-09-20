@@ -174,8 +174,29 @@ struct FriendProfileSheet: View {
                 }
                 .presentationDetents([.large])
                 .toolbar {
+                    if !isCurrentUser {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Menu {
+                                Button(role: .destructive) {
+                                    Task { try? await ModerationService.shared.report(reportedUserID: profile.uid, reason: "Inappropriate Profile") }
+                                    dismiss()
+                                } label: {
+                                    Label("Report Profile", systemImage: "exclamationmark.bubble")
+                                }
+                                Button(role: .destructive) {
+                                    Task { try? await ModerationService.shared.blockUser(blockedUserID: profile.uid) }
+                                    vm.remove(friendProfile: profile) // Removes from friend list locally too
+                                    dismiss()
+                                } label: {
+                                    Label("Block User", systemImage: "nosign")
+                                }
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
+                            }
+                        }
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button(role: .cancel) { dismiss() }
+                        Button("Done") { dismiss() }
                     }
                 }
             }

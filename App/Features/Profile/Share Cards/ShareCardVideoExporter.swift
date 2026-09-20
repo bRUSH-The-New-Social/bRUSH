@@ -210,12 +210,14 @@ class ShareCardVideoExporter: ObservableObject {
             bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue
         )
         
-        context?.translateBy(x: 0, y: height)
-        context?.scaleBy(x: 1.0, y: -1.0)
-        
-        UIGraphicsPushContext(context!)
-        image.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
-        UIGraphicsPopContext()
+        if let ctx = context {
+            ctx.translateBy(x: 0, y: height)
+            ctx.scaleBy(x: 1.0, y: -1.0)
+            
+            UIGraphicsPushContext(ctx)
+            image.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+            UIGraphicsPopContext()
+        }
         
         CVPixelBufferUnlockBaseAddress(buffer, [])
         

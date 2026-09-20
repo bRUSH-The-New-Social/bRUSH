@@ -68,10 +68,14 @@ final class InMemoryAuthProvider: AuthProviding {
     }
 }
 
-// MARK: - GoogleSignInProviding Protocol (No changes here, keeping for context)
 protocol GoogleSignInProviding {
     @MainActor
     func signInWithGoogle() async throws -> AppUser
+}
+
+protocol AppleSignInProviding {
+    @MainActor
+    func signInWithApple() async throws -> AppUser
 }
 
 // MARK: - AuthService (Updated signUp logic)
@@ -153,6 +157,20 @@ final class AuthService: ObservableObject {
             }
         } else {
             print("Google Sign-In not available in current build.")
+        }
+    }
+
+    @MainActor
+    func signInWithApple() async {
+        if let appleProvider = provider as? AppleSignInProviding {
+            do {
+                let u = try await appleProvider.signInWithApple()
+                self.user = u
+            } catch {
+                print("Auth Apple signIn error: \(error)")
+            }
+        } else {
+            print("Apple Sign-In not available in current build.")
         }
     }
 

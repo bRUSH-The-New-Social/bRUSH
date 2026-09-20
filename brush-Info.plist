@@ -17,5 +17,7 @@
 	<string>https://generatedailyprompt-loni6woi4a-uc.a.run.app</string>
 	<key>RevenueCatAPIKey</key>
 	<string>test_oLjmfFXiqPRkuiWndRKWAngiVbT</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

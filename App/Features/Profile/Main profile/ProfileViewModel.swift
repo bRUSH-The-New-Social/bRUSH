@@ -114,6 +114,16 @@ class ProfileViewModel: ObservableObject {
         }
     }
 
+    func signInWithApple() async {
+        errorMessage = nil
+        await auth.signInWithApple()
+        if let uid = auth.user?.id {
+            await loadProfile(uid: uid)
+        } else {
+            self.errorMessage = "Failed to sign in with Apple."
+        }
+    }
+
     func signOut() {
         Task {
             await auth.signOut()
