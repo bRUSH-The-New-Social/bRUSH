@@ -46,5 +46,15 @@ final class ModerationService {
             "blockedID": blockedUserID,
             "timestamp": FieldValue.serverTimestamp()
         ])
+        
+        // Remove friendship in both directions to ensure they disappear from friends lists
+        let friendshipsRef = db.collection("friendships")
+        try? await friendshipsRef.document(currentUserID).collection("friends").document(blockedUserID).delete()
+        try? await friendshipsRef.document(blockedUserID).collection("friends").document(currentUserID).delete()
+        
+        // Also remove any pending friend requests
+        let requestsRef = db.collection("friendRequests")
+        try? await requestsRef.document(currentUserID).collection("incoming").document(blockedUserID).delete()
+        try? await requestsRef.document(blockedUserID).collection("incoming").document(currentUserID).delete()
     }
 }

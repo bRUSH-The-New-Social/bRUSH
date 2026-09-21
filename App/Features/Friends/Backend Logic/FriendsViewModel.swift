@@ -281,7 +281,19 @@ class FriendsViewModel: ObservableObject {
         
         do {
             let hits = try await handleService.searchHandles(prefix: raw, limit: 20)
-            let searchResults = hits.map { FriendSearchResult(uid: $0.uid, handle: $0.handle, fullName: $0.fullName) }
+            var searchResults = hits.map { FriendSearchResult(uid: $0.uid, handle: $0.handle, fullName: $0.fullName) }
+            
+            // 🚫 Filter out blocked users
+            let blockedSnapshot = try? await Firestore.firestore()
+                .collection("users")
+                .document(me)
+                .collection("blockedUsers")
+                .getDocuments()
+            if let blockedDocs = blockedSnapshot?.documents {
+                let blockedIDs = Set(blockedDocs.compactMap { $0.data()["blockedUserID"] as? String })
+                searchResults.removeAll { blockedIDs.contains($0.uid) }
+            }
+
             var newPending: Set<String> = []
 
             await withTaskGroup(of: (String, Bool, Bool).self) { group in

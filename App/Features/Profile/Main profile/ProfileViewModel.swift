@@ -118,9 +118,63 @@ class ProfileViewModel: ObservableObject {
         errorMessage = nil
         await auth.signInWithApple()
         if let uid = auth.user?.id {
-            await loadProfile(uid: uid)
+            await handleSocialSignInProfile(uid: uid)
         } else {
             self.errorMessage = "Failed to sign in with Apple."
+        }
+    }
+
+    func signInWithGoogle() async {
+        errorMessage = nil
+        await auth.signInWithGoogle()
+        if let uid = auth.user?.id {
+            await handleSocialSignInProfile(uid: uid)
+        } else {
+            self.errorMessage = "Failed to sign in with Google."
+        }
+    }
+    
+    private func handleSocialSignInProfile(uid: String) async {
+        do {
+            let _ = try await UserService.shared.fetchProfile(uid: uid)
+            await loadProfile(uid: uid)
+        } catch {
+            // Profile not found, let's create a default one
+            let defaultName = auth.user?.displayName ?? "User"
+            let nameParts = defaultName.split(separator: " ").map { String($0) }
+            let firstName = nameParts.first ?? "User"
+            let lastName = nameParts.count > 1 ? nameParts.dropFirst().joined(separator: " ") : ""
+            
+            let newProfile = UserProfile(
+                uid: uid,
+                firstName: firstName,
+                lastName: lastName,
+                displayName: firstName + String(Int.random(in: 1000...9999)),
+                email: auth.user?.email ?? "",
+                avatarType: "personal",
+                avatarBackground: nil, avatarBody: nil, avatarShirt: nil, avatarEyes: nil, avatarMouth: nil, avatarHair: nil, avatarFacialHair: nil,
+                goldMedalsAccumulated: 0, silverMedalsAccumulated: 0, bronzeMedalsAccumulated: 0,
+                goldMedalsAwarded: 0, silverMedalsAwarded: 0, bronzeMedalsAwarded: 0,
+                totalDrawingCount: 0, streakCount: 0, memberSince: Date(),
+                lastCompletedDate: nil, lastAttemptedDate: nil
+            )
+            
+            do {
+                try await UserService.shared.createProfile(userProfile: newProfile)
+                
+                let localProfile = LocalUserProfile(
+                    firstName: newProfile.firstName,
+                    lastName: newProfile.lastName,
+                    displayName: newProfile.displayName,
+                    email: newProfile.email,
+                    uid: uid
+                )
+                LocalUserStorage.shared.saveProfile(localProfile)
+                
+                await loadProfile(uid: uid)
+            } catch {
+                await MainActor.run { self.errorMessage = "Failed to create profile: \(error.localizedDescription)" }
+            }
         }
     }
 

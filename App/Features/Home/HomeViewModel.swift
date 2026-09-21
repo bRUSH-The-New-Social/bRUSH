@@ -119,6 +119,17 @@ final class HomeViewModel: ObservableObject {
 
             var userAndFriends = friendsSnapshot.documents.map { $0.documentID }
             userAndFriends.append(currentUID) // include self
+            
+            // 🚫 Filter out blocked users
+            let blockedSnapshot = try? await db.collection("users")
+                .document(currentUID)
+                .collection("blockedUsers")
+                .getDocuments()
+                
+            if let blockedDocs = blockedSnapshot?.documents {
+                let blockedIDs = Set(blockedDocs.compactMap { $0.data()["blockedUserID"] as? String })
+                userAndFriends.removeAll { blockedIDs.contains($0) }
+            }
 
             print("✅ Found \(userAndFriends.count) total users (self + friends)")
 

@@ -390,12 +390,18 @@ struct UserFeedItemView: View {
             if !isOwnPost {
                 Menu {
                     Button(role: .destructive) {
-                        Task { try? await ModerationService.shared.report(reportedUserID: item.userId, reason: "Inappropriate Content") }
+                        Task { 
+                            try? await ModerationService.shared.report(reportedUserID: item.userId, reason: "Inappropriate Content") 
+                            await MainActor.run { onRefreshNeeded?() }
+                        }
                     } label: {
                         Label("Report Post", systemImage: "exclamationmark.bubble")
                     }
                     Button(role: .destructive) {
-                        Task { try? await ModerationService.shared.blockUser(blockedUserID: item.userId) }
+                        Task { 
+                            try? await ModerationService.shared.blockUser(blockedUserID: item.userId) 
+                            await MainActor.run { onRefreshNeeded?() }
+                        }
                     } label: {
                         Label("Block User", systemImage: "nosign")
                     }

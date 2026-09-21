@@ -1,5 +1,6 @@
 import SwiftUI
 import AuthenticationServices
+import GoogleSignInSwift
 
 struct SignInProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel
@@ -67,11 +68,25 @@ struct SignInProfileView: View {
                                 }
                             }
                             
-                            GoogleSignInButton {
-                                // Task { await viewModel.signInWithGoogle() } // Needs signInWithGoogle in ViewModel, but skipping for now
-                                print("Google Sign in tapped")
+                            Button(action: {
+                                Task { await viewModel.signInWithGoogle() }
+                            }) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color.white)
+                                    
+                                    HStack(spacing: 8) {
+                                        Image("google_logo")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 18, height: 18)
+                                        Text("Sign in with Google")
+                                            .font(.system(size: 19, weight: .medium))
+                                            .foregroundColor(.black)
+                                    }
+                                }
+                                .frame(height: 50)
                             }
-                            .frame(height: 50)
                         }
                     }
                     .frame(maxWidth: 340)

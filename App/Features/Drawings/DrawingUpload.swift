@@ -19,12 +19,12 @@ class DrawingUploader {
             }
 
             // Continue upload once we have the prompt
-            self.uploadImageAndSaveFeed(image: image, completion: completion)
+            self.uploadImageAndSaveFeed(image: image, prompt: dailyPrompt, completion: completion)
         }
     }
 
     // MARK: - Upload to Firebase Storage and then save to Firestore
-    private func uploadImageAndSaveFeed(image: UIImage, completion: @escaping (Result<String, Error>) -> Void) {
+    private func uploadImageAndSaveFeed(image: UIImage, prompt: String, completion: @escaping (Result<String, Error>) -> Void) {
         // 1️⃣ Convert image to JPEG
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             completion(.failure(NSError(domain: "ImageError", code: 0,
@@ -57,13 +57,13 @@ class DrawingUploader {
                 }
 
                 // 5️⃣ Save image metadata + prompt to Firestore dailyFeed
-                self.saveToDailyFeed(imageURL: downloadURL, completion: completion)
+                self.saveToDailyFeed(imageURL: downloadURL, prompt: prompt, completion: completion)
             }
         }
     }
 
     // MARK: - Firestore save function
-    private func saveToDailyFeed(imageURL: String, completion: @escaping (Result<String, Error>) -> Void) {
+    private func saveToDailyFeed(imageURL: String, prompt: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let userID = Auth.auth().currentUser?.uid else {
             completion(.failure(NSError(domain: "AuthError", code: 0,
                 userInfo: [NSLocalizedDescriptionKey: "User not logged in."])))
@@ -78,6 +78,7 @@ class DrawingUploader {
 
         let feedData: [String: Any] = [
             "imageURL": imageURL,
+            "prompt": prompt,
             "userRef": Firestore.firestore().document("users/\(userID)"),
             "gold": 0,
             "silver": 0,
