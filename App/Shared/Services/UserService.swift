@@ -113,6 +113,7 @@ final class UserService {
             "firstName": userProfile.firstName,
             "lastName": userProfile.lastName,
             "displayName": userProfile.displayName,
+            "displayNameLower": userProfile.displayName.lowercased(),
             "email": userProfile.email.lowercased(),
             "avatarType": userProfile.avatarType,
             "createdAt": FieldValue.serverTimestamp(),
@@ -195,11 +196,23 @@ final class UserService {
     // -------------------------------------------------------
     func fetchProfile(uid: String) async throws -> UserProfile {
         let doc = try await db.collection(usersCollection).document(uid).getDocument()
-        
+
         guard let data = doc.data() else {
             throw AuthError.backend("Profile not found.")
         }
-        
+
+        // Backfill the lowercase search index for accounts created before it existed,
+        // so existing users become findable in friend search after opening the app once.
+        let displayName = data["displayName"] as? String ?? ""
+        if !displayName.isEmpty {
+            let expectedLower = displayName.lowercased()
+            if (data["displayNameLower"] as? String) != expectedLower {
+                try? await db.collection(usersCollection).document(uid).updateData([
+                    "displayNameLower": expectedLower
+                ])
+            }
+        }
+
         return try mapDataToProfile(data: data, uid: uid)
     }
     

@@ -60,7 +60,8 @@ class EditProfileViewModel: ObservableObject {
                 uid: userProfile.uid,
                 data: [
                     "firstName": firstName,
-                    "displayName": displayName   // ✅ match your UserProfile struct + Firestore field
+                    "displayName": displayName,   // ✅ match your UserProfile struct + Firestore field
+                    "displayNameLower": displayName.lowercased()  // keep search index in sync
                 ]
             )
             return true

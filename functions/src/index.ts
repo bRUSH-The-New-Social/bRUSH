@@ -162,7 +162,55 @@ export const generateDailyPrompt = functions.https.onRequest(
   }
 );
 
-// 🕛 Scheduled function — auto-refreshes daily at midnight CST and deletes all old drawings
+// 🔧 One-time backfill: populate `displayNameLower` for every existing user so
+// case-insensitive friend search works for accounts created before the field existed.
+// Call once after deploy:  GET https://<region>-<project>.cloudfunctions.net/backfillDisplayNameLower
+export const backfillDisplayNameLower = functions.https.onRequest(
+  async (_req, res): Promise<void> => {
+    try {
+      const snap = await db.collection("users").get();
+
+      let updated = 0;
+      let skipped = 0;
+      let batch = db.batch();
+      let pending = 0;
+
+      for (const doc of snap.docs) {
+        const data = doc.data();
+        const displayName = (data.displayName as string) || "";
+        if (!displayName) {
+          skipped++;
+          continue;
+        }
+        const expected = displayName.toLowerCase();
+        if (data.displayNameLower === expected) {
+          skipped++;
+          continue;
+        }
+
+        batch.update(doc.ref, { displayNameLower: expected });
+        updated++;
+        pending++;
+
+        // Firestore batches are capped at 500 writes.
+        if (pending === 400) {
+          await batch.commit();
+          batch = db.batch();
+          pending = 0;
+        }
+      }
+
+      if (pending > 0) await batch.commit();
+
+      console.log(`✅ Backfill complete. updated=${updated} skipped=${skipped}`);
+      res.status(200).json({ success: true, updated, skipped });
+    } catch (err) {
+      console.error("❌ Backfill failed:", err);
+      res.status(500).json({ success: false, error: String(err) });
+    }
+  }
+);
+
 export const scheduledDailyPrompt = functionsV1.pubsub
   .schedule("0 0 * * *") // every midnight UTC (6PM CST)
   .timeZone("America/Chicago")
