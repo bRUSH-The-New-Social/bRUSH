@@ -2,9 +2,9 @@ import SwiftUI
 import Vortex
 
 struct ViewOffsetKey: PreferenceKey {
-    typealias Value = [Int: CGFloat]
-    static var defaultValue: [Int: CGFloat] = [:]
-    static func reduce(value: inout [Int: CGFloat], nextValue: () -> [Int: CGFloat]) {
+    typealias Value = [String: CGFloat]
+    static var defaultValue: [String: CGFloat] = [:]
+    static func reduce(value: inout [String: CGFloat], nextValue: () -> [String: CGFloat]) {
         value.merge(nextValue()) { $1 }
     }
 }
@@ -14,46 +14,58 @@ struct HomeView: View {
     @State private var showOnboarding: Bool = false
     @State private var showingNotifications: Bool = false
     @StateObject private var viewModel = HomeViewModel()
-    
+
     @StateObject private var friendsViewModel = FriendsViewModel()
-    
+
     @State private var isOnboardingPresented: Bool = false
     @State private var isPresentingCreate: Bool = false
-    
+
     @Namespace private var launchAnimation
     @State private var isShowingSplash = true
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
-    
+
     @State private var didDismissCreate = false
-    
+
     @State private var showSnow: Bool = HomeView.isWinter()
     @State private var snowSystem: VortexSystem = HomeView.createGentleSnow()
     @State private var isRefreshing: Bool = false
     @State private var isInitialLoading: Bool = true
     @State private var hasInitialLoadCompleted: Bool = false
-    
+
     @State private var loadID = UUID()
 
     @EnvironmentObject var dataModel: DataModel
-    @State private var currentFeedIndex: Int = 0
-    
+    @EnvironmentObject var revenueCatService: RevenueCatService
+    @State private var currentFeedIndex: String = "post-0"
+
     @State private var dailyGoldAwarded: Bool = false
     @State private var dailySilverAwarded: Bool = false
     @State private var dailyBronzeAwarded: Bool = false
-    
+
     @State private var didJustPost: Bool = false
     @State private var actuallyShowStreakView: Bool = false
-    
+
     @State private var isReloadingWithOverlay: Bool = false
-    
+
     @State private var hasUnreadNotifications: Bool = false
-    
+
     private var safeAreaInsets: UIEdgeInsets {
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { ($0 as? UIWindowScene)?.keyWindow }
             .first
         return keyWindow?.safeAreaInsets ?? .zero
+    }
+
+    private var feedRows: [String] {
+        var rows: [String] = []
+        for index in viewModel.feedItems.indices {
+            rows.append("post-\(index)")
+            if !revenueCatService.isPro && index > 0 && index % 3 == 0 && index != viewModel.feedItems.count - 1 {
+                rows.append("ad-\(index)")
+            }
+        }
+        return rows
     }
 
     private func reloadFeed(showOverlay: Bool) async {
@@ -62,14 +74,14 @@ struct HomeView: View {
                 isReloadingWithOverlay = true
             }
         }
-        
+
         await viewModel.checkUserPostStatus()
-        
+
         await withTaskGroup(of: Void.self) { group in
             group.addTask { await viewModel.loadFeed() }
             group.addTask { await friendsViewModel.refreshFriends() }
         }
-        
+
         await MainActor.run {
             loadID = UUID()
             if showOverlay {
@@ -77,7 +89,7 @@ struct HomeView: View {
             }
         }
     }
-    
+
     private func updateNotificationStatus() {
         hasUnreadNotifications = !NotificationManager.shared.getNotificationHistory().isEmpty
     }
@@ -96,40 +108,55 @@ struct HomeView: View {
                             let topPadding: CGFloat = safeAreaInsetsTop() + 34 + 24 + 22
                             let bottomPadding: CGFloat = safeAreaInsetsBottom() + (UIDevice.current.userInterfaceIdiom == .pad ? 22 : 70)
                             let availableHeight = geometry.size.height - topPadding - bottomPadding
-                            
+
                             let sidePadding: CGFloat = (UIDevice.current.userInterfaceIdiom == .pad ? 0 : 6)
                             let cardWidth = availableHeight * (9.0 / 16.0) - sidePadding
-                            
+
                             ScrollViewReader { proxy in
                                 ZStack(alignment: .center) {
                                     ScrollView(.vertical) {
                                         LazyVStack(spacing: 0) {
-                                            ForEach(viewModel.feedItems.indices, id: \.self) { index in
-                                                let item = viewModel.feedItems[index]
+                                            let rows = feedRows
+                                            ForEach(rows, id: \.self) { row in
+                                                let isAd = row.hasPrefix("ad-")
+                                                let parts = row.split(separator: "-")
+                                                let index = Int(parts.last ?? "0") ?? 0
+                                                let item = viewModel.feedItems.indices.contains(index) ? viewModel.feedItems[index] : nil
 
                                                 ZStack {
-                                                    UserFeedItemView(
-                                                        item: item,
-                                                        prompt: viewModel.dailyPrompt,
-                                                        loadID: loadID,
-                                                        friendsViewModel: friendsViewModel,
-                                                        hasPostedToday: $viewModel.hasPostedToday,
-                                                        hasAttemptedDrawing: $viewModel.hasAttemptedDrawing,
-                                                        isPresentingCreate: $isPresentingCreate,
-                                                        isGoldDisabled: $dailyGoldAwarded,
-                                                        isSilverDisabled: $dailySilverAwarded,
-                                                        isBronzeDisabled: $dailyBronzeAwarded,
-                                                        onGoldTapped: { isSelected in dailyGoldAwarded = isSelected },
-                                                        onSilverTapped: { isSelected in dailySilverAwarded = isSelected },
-                                                        onBronzeTapped: { isSelected in dailyBronzeAwarded = isSelected },
-                                                        onRefreshNeeded: {
-                                                            Task {
-                                                                await reloadFeed(showOverlay: true)
+                                                    if isAd {
+                                                        ProPaywallView()
+                                                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                                                            .contentShape(RoundedRectangle(cornerRadius: 16))
+                                                            .aspectRatio(9/16, contentMode: .fit)
+                                                            .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 15)
+                                                            .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+                                                            .frame(width: cardWidth, height: availableHeight)
+                                                            .padding(.bottom, bottomPadding)
+                                                    } else if let item = item {
+                                                        UserFeedItemView(
+                                                            item: item,
+                                                            prompt: viewModel.dailyPrompt,
+                                                            loadID: loadID,
+                                                            friendsViewModel: friendsViewModel,
+                                                            hasPostedToday: $viewModel.hasPostedToday,
+                                                            hasAttemptedDrawing: $viewModel.hasAttemptedDrawing,
+                                                            isPresentingCreate: $isPresentingCreate,
+                                                            isGoldDisabled: $dailyGoldAwarded,
+                                                            isSilverDisabled: $dailySilverAwarded,
+                                                            isBronzeDisabled: $dailyBronzeAwarded,
+                                                            onGoldTapped: { isSelected in dailyGoldAwarded = isSelected },
+                                                            onSilverTapped: { isSelected in dailySilverAwarded = isSelected },
+                                                            onBronzeTapped: { isSelected in dailyBronzeAwarded = isSelected },
+                                                            onRefreshNeeded: {
+                                                                Task {
+                                                                    await reloadFeed(showOverlay: true)
+                                                                }
                                                             }
-                                                        }
-                                                    )
-                                                    .frame(width: cardWidth, height: availableHeight)
-                                                    .padding(.bottom, bottomPadding)
+                                                        )
+                                                        .frame(width: cardWidth, height: availableHeight)
+                                                        .padding(.bottom, bottomPadding)
+                                                    }
                                                 }
                                                 .containerRelativeFrame(.vertical)
                                                 .scrollTransition { content, phase in
@@ -137,13 +164,13 @@ struct HomeView: View {
                                                         .opacity(phase.isIdentity ? 1 : 0.8)
                                                         .scaleEffect(phase.isIdentity ? 1 : 0.9)
                                                 }
-                                                .id(index)
+                                                .id(row)
                                                 .background(
                                                     GeometryReader { itemGeo in
                                                         Color.clear
                                                             .preference(
                                                                 key: ViewOffsetKey.self,
-                                                                value: [index: itemGeo.frame(in: .named("feedScroll")).midY]
+                                                                value: [row: itemGeo.frame(in: .named("feedScroll")).midY]
                                                             )
                                                     }
                                                 )
@@ -160,7 +187,7 @@ struct HomeView: View {
                                     .onPreferenceChange(ViewOffsetKey.self) { values in
                                         DispatchQueue.main.async {
                                             let scrollCenter = geometry.size.height / 2
-                                            
+
                                             if let closest = values.min(by: { abs($0.value - scrollCenter) < abs($1.value - scrollCenter) }) {
                                                 if currentFeedIndex != closest.key {
                                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -179,12 +206,13 @@ struct HomeView: View {
                                     }
 
                                     if !viewModel.feedItems.isEmpty {
-                                        let itemCount = viewModel.feedItems.count
+                                        let rows = feedRows
+                                        let itemCount = rows.count
                                         let capsuleWidth: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 10 : 6
                                         let verticalSpacing: CGFloat = capsuleWidth
-                                        
+
                                         let contentHeightBetweenBars = availableHeight
-                                        
+
                                         let totalSpacing = CGFloat(max(0, itemCount - 1)) * verticalSpacing
                                         let availableHeightForCapsules = contentHeightBetweenBars - totalSpacing
                                         let capsuleHeight = max(4, availableHeightForCapsules / CGFloat(max(1, itemCount)))
@@ -193,15 +221,15 @@ struct HomeView: View {
                                             Spacer()
                                             VStack {
                                                 VStack(spacing: verticalSpacing) {
-                                                    ForEach(viewModel.feedItems.indices, id: \.self) { index in
+                                                    ForEach(rows, id: \.self) { row in
                                                         Button(action: {
                                                             withAnimation(.spring()) {
-                                                                proxy.scrollTo(index, anchor: .center)
+                                                                proxy.scrollTo(row, anchor: .center)
                                                             }
                                                         }) {
                                                             Capsule()
                                                                 .fill(
-                                                                    currentFeedIndex == index
+                                                                    currentFeedIndex == row
                                                                     ? (colorScheme == .dark
                                                                        ? Color(red: 0.65, green: 0.05, blue: 0.1)
                                                                        : Color.red)
@@ -315,7 +343,7 @@ struct HomeView: View {
                         .zIndex(1)
                         .opacity(isShowingSplash ? 0 : 1)
                     }
-                    
+
                     if actuallyShowStreakView {
                         StreakUpdateView(isShowing: $actuallyShowStreakView)
                             .zIndex(10)
@@ -324,7 +352,7 @@ struct HomeView: View {
                 }
                 .toolbar {
                     ToolbarSpacer(.fixed)
-                    
+
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: { withAnimation { showingNotifications.toggle() } }) {
                             Image(systemName: "bell.fill")
@@ -360,14 +388,14 @@ struct HomeView: View {
                             isShowingSplash = false
                         }
                     }
-                    
+
                     updateNotificationStatus()
                     isOnboardingPresented = !hasCompletedOnboarding || showOnboarding
-                    
+
                     if hasInitialLoadCompleted && !isRefreshing {
                         Task { await reloadFeed(showOverlay: true) }
                     }
-                    
+
                     if showSnow {
                         Task {
                             try? await Task.sleep(nanoseconds: 15_000_000_000)
@@ -409,16 +437,16 @@ struct HomeView: View {
                 .onChange(of: didDismissCreate) {
                     if didDismissCreate {
                         didDismissCreate = false
-                        
+
                         Task {
                             let didSavePost = viewModel.hasPostedToday
-                            
+
                             if !didSavePost {
                                 await viewModel.markDrawingAttempted()
                             }
-                            
+
                             await reloadFeed(showOverlay: true)
-                            
+
                             if didSavePost {
                                 didJustPost = true
                             }
@@ -457,7 +485,7 @@ struct HomeView: View {
                     )
                     .edgesIgnoringSafeArea(.all)
                     .matchedGeometryEffect(id: "backgroundAnimation", in: launchAnimation)
-                    
+
                     GeometryReader { geo in
                         Image("brush_shadow")
                             .resizable()
@@ -473,7 +501,7 @@ struct HomeView: View {
         }
     }
 
-    
+
     private func syncMedalUsageFromBackend() async {
         let usage = await AwardServiceFirebase.shared.fetchTodayUsage()
         await MainActor.run {
@@ -482,14 +510,14 @@ struct HomeView: View {
             dailyBronzeAwarded = usage.bronze
         }
     }
-    
+
     private func safeAreaInsetsTop() -> CGFloat {
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { ($0 as? UIWindowScene)?.keyWindow }
             .first
         return keyWindow?.safeAreaInsets.top ?? 0
     }
-    
+
     private func safeAreaInsetsBottom() -> CGFloat {
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { ($0 as? UIWindowScene)?.keyWindow }
@@ -501,10 +529,10 @@ struct HomeView: View {
         let month = Calendar.current.component(.month, from: Date())
         return [11, 12, 1, 2].contains(month)
     }
-    
+
     private static func createGentleSnow() -> VortexSystem {
         let system = VortexSystem(tags: ["circle"])
-        
+
         system.position = [0.5, 0]
         system.shape = .box(width: 1, height: 0)
         system.birthRate = 10
@@ -516,7 +544,7 @@ struct HomeView: View {
         system.size = 0.25
         system.sizeVariation = 0.5
         system.sizeMultiplierAtDeath = 1
-        
+
         return system
     }
 }
