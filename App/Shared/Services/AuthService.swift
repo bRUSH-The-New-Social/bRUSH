@@ -83,7 +83,15 @@ final class AuthService: ObservableObject {
     static let shared = AuthService()
 
     @Published private(set) var user: AppUser?
+    /// Whether the initial auth-state restoration has completed. Starts `true`
+    /// so the app root can hold before deciding sign-in vs. main content, which
+    /// avoids a flash of the sign-in screen while Firebase restores a session.
+    @Published private(set) var isRestoringSession: Bool = true
     private let provider: AuthProviding
+
+    #if canImport(FirebaseAuth)
+    private var authStateHandle: AuthStateDidChangeListenerHandle?
+    #endif
 
     init(provider: AuthProviding? = nil) {
         #if canImport(FirebaseAuth)
@@ -93,6 +101,34 @@ final class AuthService: ObservableObject {
         #endif
         self.provider = chosen
         self.user = chosen.currentUser
+
+        #if canImport(FirebaseAuth)
+        // Firebase restores a persisted session asynchronously on cold launch,
+        // so `currentUser` above may be nil even for a signed-in user. Listen for
+        // the restored state so `user` becomes correct and downstream screens
+        // (Home feed, Friends) don't load with a nil UID.
+        authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, firebaseUser in
+            guard let self else { return }
+            if let firebaseUser {
+                self.user = AppUser(id: firebaseUser.uid,
+                                    email: firebaseUser.email ?? "",
+                                    displayName: firebaseUser.displayName)
+            } else {
+                self.user = nil
+            }
+            self.isRestoringSession = false
+        }
+        #else
+        self.isRestoringSession = false
+        #endif
+    }
+
+    deinit {
+        #if canImport(FirebaseAuth)
+        if let authStateHandle {
+            Auth.auth().removeStateDidChangeListener(authStateHandle)
+        }
+        #endif
     }
     
     // 💡 HELPER: Maps cryptic system/Firebase errors to user-friendly AuthErrors.

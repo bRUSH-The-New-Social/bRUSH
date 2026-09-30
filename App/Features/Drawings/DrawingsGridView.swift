@@ -87,6 +87,7 @@ struct DrawingsGridView: View {
                     }
                     .padding()
                 }
+                .scrollEdgeEffectStyle(.soft, for: .top)
                 .navigationTitle("Past Drawings")
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
@@ -137,11 +138,17 @@ struct DrawingsGridView: View {
                                 }
                             }
                             if !isEditing {
+                                // The "+" creates a drawing directly, bypassing the
+                                // daily prompt flow. Keep it for demos on the simulator
+                                // and debug builds only; hide it in production so users
+                                // draw through the intended path.
+                                #if DEBUG || targetEnvironment(simulator)
                                 Button {
                                     isAddingNewDrawing = true
                                 } label: {
                                     Image(systemName: "plus")
                                 }
+                                #endif
                             }
                         }
                     }
@@ -176,24 +183,58 @@ struct DrawingsGridView: View {
             .onAppear {
                 selectedItem = nil
             }
-            .alert("Delete Drawing", isPresented: $showSingleDeleteAlert, presenting: itemToDelete) { item in
-                Button("Delete", role: .destructive) {
-                    triggerShredder(for: [item.id])
-                    itemToDelete = nil
-                }
-                .keyboardShortcut(.defaultAction)
-                Button("Cancel", role: .cancel) {
-                    itemToDelete = nil
-                }
-            } message: { _ in
-                Text("This drawing cannot be restored.")
-            }
+            .modifier(SingleDeleteAlert(itemToDelete: $itemToDelete,
+                                        isPresented: $showSingleDeleteAlert,
+                                        onDelete: { item in
+                                            triggerShredder(for: [item.id])
+                                            itemToDelete = nil
+                                        }))
         }
     }
     
     private func triggerShredder(for itemIDs: [UUID]) {
         withAnimation {
             itemsAnimatingDelete.formUnion(itemIDs)
+        }
+    }
+}
+
+/// Delete confirmation for a single drawing.
+///
+/// iOS 27 adds an `alert(_:item:)` overload that binds the alert directly to the
+/// tapped item — one optional drives both presentation and the value handed to
+/// the button — which avoids stale-`presenting:` edge cases. That symbol does
+/// not exist in the iOS 26 SDK, so it can't be compiled here yet (an
+/// `if #available` gate still requires the symbol at build time). When this
+/// project builds against the iOS 27 SDK, swap the body for the gated version
+/// documented below.
+///
+/// iOS 27 version to adopt once the SDK is available:
+/// ```
+/// if #available(iOS 27, *) {
+///     content.alert("Delete Drawing", item: $itemToDelete) { item in
+///         Button("Delete", role: .destructive) { onDelete(item) }
+///             .keyboardShortcut(.defaultAction)
+///         Button("Cancel", role: .cancel) { itemToDelete = nil }
+///     } message: { _ in Text("This drawing cannot be restored.") }
+/// } else { /* the isPresented+presenting body below */ }
+/// ```
+private struct SingleDeleteAlert: ViewModifier {
+    @Binding var itemToDelete: Item?
+    @Binding var isPresented: Bool
+    let onDelete: (Item) -> Void
+
+    func body(content: Content) -> some View {
+        content.alert("Delete Drawing", isPresented: $isPresented, presenting: itemToDelete) { item in
+            Button("Delete", role: .destructive) {
+                onDelete(item)
+            }
+            .keyboardShortcut(.defaultAction)
+            Button("Cancel", role: .cancel) {
+                itemToDelete = nil
+            }
+        } message: { _ in
+            Text("This drawing cannot be restored.")
         }
     }
 }

@@ -37,51 +37,11 @@ struct brushApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TabView {
-                // 1. Home Tab
-                NavigationStack {
-                    HomeView()
+            RootView()
+                .environmentObject(dataModel)
+                .onOpenURL { url in
+                    GIDSignIn.sharedInstance.handle(url)
                 }
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-
-                // 2. Drawings Tab
-                NavigationStack {
-                    DrawingsGridView()
-                }
-                .tabItem {
-                    VStack {
-                        Image(systemName: "pencil.and.outline")
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.accentColor, lineWidth: 2)
-                                    .frame(width: 32, height: 32)
-                            )
-                        Text("Drawings")
-                    }
-                }
-                
-                // 3. Friends Tab
-                NavigationStack {
-                    FriendsView()
-                }
-                .tabItem {
-                    Label("Friends", systemImage: "person.2")
-                }
-                
-                // 4. Profile Tab
-                NavigationStack {
-                    ProfileView()
-                }
-                .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle")
-                }
-            }
-            .environmentObject(dataModel)
-            .onOpenURL { url in
-                GIDSignIn.sharedInstance.handle(url)
-            }
         }
     }
 }

@@ -154,6 +154,7 @@ struct HomeView: View {
                                     .scrollTargetBehavior(.paging)
                                     .scrollBounceBehavior(.always)
                                     .scrollIndicators(.hidden)
+                                    .scrollEdgeEffectStyle(.soft, for: .top)
                                     .ignoresSafeArea()
                                     .contentMargins(.top, topPadding, for: .scrollContent)
                                     .coordinateSpace(name: "feedScroll")

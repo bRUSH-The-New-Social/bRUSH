@@ -95,7 +95,7 @@ struct UserFeedItemView: View {
         VStack(spacing: 0) {
             ZStack {
                 ZStack {
-                    AsyncImage(url: URL(string: item.imageURL), transaction: Transaction(animation: .easeIn(duration: 0.3))) { phase in
+                    CachedAsyncImage(url: URL(string: item.imageURL), transaction: Transaction(animation: .easeIn(duration: 0.3))) { phase in
                         switch phase {
                         case .success(let image):
                             image
