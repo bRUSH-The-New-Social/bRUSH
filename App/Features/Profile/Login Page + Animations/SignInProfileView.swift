@@ -74,7 +74,11 @@ struct SignInProfileView: View {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 8)
                                         .fill(Color.white)
-                                    
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color(white: 0.74), lineWidth: 1)
+                                        )
+
                                     HStack(spacing: 8) {
                                         Image("google_logo")
                                             .resizable()
