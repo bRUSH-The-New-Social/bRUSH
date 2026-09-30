@@ -26,15 +26,26 @@ final class AgeGate: ObservableObject {
     private static let passedKey = "ageGatePassed"
 
     init() {
+        // In Debug or simulator builds, skip age blocking entirely so demos and
+        // development aren't gated by the Declared Age Range prompt.
+        #if DEBUG || targetEnvironment(simulator)
+        status = .allowed
+        return
+        #else
         // Skip the prompt if a prior launch already cleared the gate.
         if UserDefaults.standard.bool(forKey: Self.passedKey) {
             status = .allowed
         }
+        #endif
     }
 
     /// Runs the declared-age-range check. Safe to call repeatedly; it no-ops once
     /// the gate has been cleared.
     func verify(using request: DeclaredAgeRangeAction) async {
+        #if DEBUG || targetEnvironment(simulator)
+        // Age blocking is disabled for Debug/simulator builds.
+        return
+        #else
         guard status != .allowed else { return }
 
         do {
@@ -56,6 +67,7 @@ final class AgeGate: ObservableObject {
             // API unavailable or account ineligible to provide a range. Fail open.
             allow()
         }
+        #endif
     }
 
     private func allow() {
