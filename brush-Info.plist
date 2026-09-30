@@ -15,5 +15,7 @@
 	</array>
 	<key>DailyPromptAPIURL</key>
 	<string>https://generatedailyprompt-loni6woi4a-uc.a.run.app</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

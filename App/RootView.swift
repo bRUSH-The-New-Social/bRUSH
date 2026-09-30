@@ -23,6 +23,12 @@ struct RootView: View {
                 }
             } else if auth.user != nil {
                 MainTabView()
+                    .task(id: auth.user?.id) {
+                        // Request notification permission in-context, only once the
+                        // user is signed in, then set up the daily reminder.
+                        NotificationManager.shared.requestPermission()
+                        NotificationManager.shared.scheduleNextReminder()
+                    }
             } else {
                 NavigationStack {
                     SignInProfileView(viewModel: signInViewModel)

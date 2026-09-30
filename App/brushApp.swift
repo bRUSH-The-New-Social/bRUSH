@@ -30,8 +30,9 @@ struct brushApp: App {
     @StateObject var dataModel = DataModel()
 
     init() {
-        NotificationManager.shared.requestPermission()
-        NotificationManager.shared.scheduleNextReminder()
+        // Set the delegate up front so notification callbacks work, but defer
+        // the permission request and reminder scheduling until after sign-in
+        // (handled in RootView) so the system prompt appears in-context.
         UNUserNotificationCenter.current().delegate = NotificationManager.shared
     }
 

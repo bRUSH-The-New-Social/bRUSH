@@ -1,5 +1,6 @@
 import Foundation
 import FirebaseFirestore
+import FirebaseStorage
 import Combine
 
 public struct UserProfile: Codable, Equatable, Hashable {
@@ -186,9 +187,32 @@ final class UserService {
         try? await batch3.commit()
         
         try await db.collection(usersCollection).document(uid).delete()
-        
+
         try? await friendshipsRef.document(uid).delete()
         try? await db.collection("friendRequests").document(uid).delete()
+
+        // Delete the user's posted drawing: the Storage image blob first
+        // (referenced by the dailyFeed doc's imageURL), then the feed doc, so no
+        // orphaned image data is left behind after account deletion.
+        await deleteUserFeedAndDrawings(uid: uid)
+    }
+
+    /// Best-effort removal of a user's posted-drawing data on account deletion:
+    /// the `dailyFeed/{uid}` document and the Storage image it points at.
+    private func deleteUserFeedAndDrawings(uid: String) async {
+        let feedRef = db.collection("dailyFeed").document(uid)
+
+        if let snapshot = try? await feedRef.getDocument(),
+           let imageURL = snapshot.data()?["imageURL"] as? String,
+           !imageURL.isEmpty {
+            // A Firebase download URL can be turned back into a StorageReference,
+            // which lets us delete the underlying object.
+            if let storageRef = try? Storage.storage().reference(forURL: imageURL) {
+                try? await storageRef.delete()
+            }
+        }
+
+        try? await feedRef.delete()
     }
     
     // -------------------------------------------------------

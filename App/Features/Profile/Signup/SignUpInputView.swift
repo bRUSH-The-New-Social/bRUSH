@@ -91,6 +91,9 @@ struct SignUpInputView: View {
             .frame(maxWidth: .infinity)
             .disabled(!viewModel.isStep1Valid || viewModel.isLoading)
             .buttonStyle(.glassProminent)
+
+            LegalAgreementView(action: "signing up")
+                .padding(.top, 4)
         }
     }
 }

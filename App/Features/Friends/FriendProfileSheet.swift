@@ -191,7 +191,7 @@ struct FriendProfileSheet: View {
                                     Label("Block User", systemImage: "nosign")
                                 }
                             } label: {
-                                Image(systemName: "ellipsis.circle")
+                                Image(systemName: "ellipsis")
                             }
                         }
                     }

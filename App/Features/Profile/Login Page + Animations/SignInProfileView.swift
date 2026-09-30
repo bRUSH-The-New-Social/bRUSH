@@ -92,6 +92,10 @@ struct SignInProfileView: View {
                     .frame(maxWidth: 340)
                     .padding(.horizontal)
 
+                    LegalAgreementView(action: "continuing")
+                        .padding(.horizontal, 24)
+                        .padding(.top, 12)
+
                     Spacer()
 
                     Button {

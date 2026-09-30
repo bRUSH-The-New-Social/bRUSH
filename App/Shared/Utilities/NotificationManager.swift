@@ -8,8 +8,10 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     private override init() {
         super.init()
         UNUserNotificationCenter.current().delegate = self
-        // 💡 FIX: Request permission immediately upon initialization
-        requestPermission()
+        // Notification permission is intentionally NOT requested here. It's
+        // requested after the user signs in (see RootView) so the prompt appears
+        // in-context rather than on first launch before the user knows what the
+        // app is (Apple HIG / Guideline 4.5.4).
 
         // ✅ FIX: Add observer to clear the badge when the app comes to the foreground
         NotificationCenter.default.addObserver(self, selector: #selector(handleAppForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
