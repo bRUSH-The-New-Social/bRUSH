@@ -12,8 +12,6 @@ struct SignUpAvatarView: View {
     @State private var selectedFacialHair: String? = nil
     @State private var selectedCategory = 0
     
-    @EnvironmentObject private var rcService: RevenueCatService
-    @State private var showingPaywall = false
 
     // Undo/Redo
     @State private var history: [AvatarParts] = []
@@ -150,17 +148,12 @@ struct SignUpAvatarView: View {
                         ForEach(currentOptions, id: \.self) { option in
                             improvedOptionPreview(
                                 option: option,
-                                isLocked: isBackgroundLocked(option),
                                 optionSize: optionSize,
                                 screenWidth: screenWidth,
                                 screenHeight: screenHeight
                             )
                             .onTapGesture {
-                                if isBackgroundLocked(option) {
-                                    showingPaywall = true
-                                } else {
-                                    updateSelection(option)
-                                }
+                                updateSelection(option)
                             }
                         }
                     }
@@ -168,9 +161,6 @@ struct SignUpAvatarView: View {
                     .padding(.top, 3)
                     .padding(.bottom, 30)
                 }
-            }
-            .sheet(isPresented: $showingPaywall) {
-                ProPaywallView()
             }
             .onAppear { initializeHistory() }
         }
@@ -212,7 +202,7 @@ struct SignUpAvatarView: View {
     }
 
     @ViewBuilder
-    private func improvedOptionPreview(option: String, isLocked: Bool, optionSize: CGFloat, screenWidth: CGFloat, screenHeight: CGFloat) -> some View {
+    private func improvedOptionPreview(option: String, optionSize: CGFloat, screenWidth: CGFloat, screenHeight: CGFloat) -> some View {
         let cornerRadius = screenWidth * 0.03
         let categoryName = (selectedCategory >= 0 && selectedCategory < categories.count) ? categories[selectedCategory] : "Background"
         
@@ -295,12 +285,6 @@ struct SignUpAvatarView: View {
                 }
             }
 
-            if isLocked {
-                Color.black.opacity(0.42)
-                Image(systemName: "lock.fill")
-                    .font(.system(size: optionSize * 0.28, weight: .semibold))
-                    .foregroundColor(.white)
-            }
         }
         .frame(width: optionSize, height: optionSize)
         .background(
@@ -316,12 +300,6 @@ struct SignUpAvatarView: View {
 
     // MARK: - Logic (Unchanged)
     
-    private func isBackgroundLocked(_ option: String) -> Bool {
-        guard !rcService.isPro else { return false }
-        guard selectedCategory < categories.count else { return false }
-        return categories[selectedCategory].lowercased().contains("background") && option != "background_1"
-    }
-
     private var currentOptions: [String] {
         let options: [String]
         switch selectedAvatarType {
