@@ -15,5 +15,7 @@
 	</array>
 	<key>DailyPromptAPIURL</key>
 	<string>https://generatedailyprompt-loni6woi4a-uc.a.run.app</string>
+	<key>RevenueCatAPIKey</key>
+	<string>test_oLjmfFXiqPRkuiWndRKWAngiVbT</string>
 </dict>
 </plist>
