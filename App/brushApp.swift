@@ -40,6 +40,7 @@ struct brushApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(dataModel)
+                .environmentObject(RevenueCatService.shared)
                 .onOpenURL { url in
                     GIDSignIn.sharedInstance.handle(url)
                 }
